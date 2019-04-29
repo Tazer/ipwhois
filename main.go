@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -78,8 +79,9 @@ func main() {
 
 	r := gin.Default()
 	r.GET("/", func(c *gin.Context) {
-		c.String(200, `This product includes GeoLite2 data created by MaxMind, available from
-		<a href="https://www.maxmind.com">https://www.maxmind.com</a>.`, nil)
+		c.String(200, fmt.Sprintf(`This product includes GeoLite2 data created by MaxMind, available from
+		<a href="https://www.maxmind.com">https://www.maxmind.com</a>. \n \n
+		Try it out here: GET /ip/%s`, c.ClientIP()), nil)
 	})
 	r.GET("/ip/:ip", func(c *gin.Context) {
 		ip := c.Param("ip")
