@@ -13,15 +13,21 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	lru "github.com/hashicorp/golang-lru"
 	"github.com/mholt/archiver"
 	"github.com/oschwald/geoip2-golang"
 )
 
 func main() {
+	lruCache, err := lru.New(1024)
+
+	if err != nil {
+		log.Fatalf("Coudlnt create LRU cache err: %v", err)
+	}
 
 	//https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz
 
-	_, err := os.Stat("GeoLite2-Country.tar.gz")
+	_, err = os.Stat("GeoLite2-Country.tar.gz")
 
 	// check if there is an error
 	if err != nil {
@@ -86,16 +92,20 @@ func main() {
 	r.GET("/ip/:ip", func(c *gin.Context) {
 		ip := c.Param("ip")
 
-		realIp := net.ParseIP(ip)
+		if cachedCountry, ok := lruCache.Get(ip); ok {
+			c.JSON(200, cachedCountry)
+			return
+		}
+		realIP := net.ParseIP(ip)
 
-		country, err := db.Country(realIp)
+		country, err := db.Country(realIP)
 
 		if err != nil {
 			log.Printf("Error gettign country err: %v", err)
 			c.AbortWithError(500, err)
 			return
 		}
-
+		lruCache.Add(ip, country)
 		c.JSON(200, country)
 	})
 	r.Run() // listen and serve on 0.0.0.0:8080

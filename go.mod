@@ -8,6 +8,7 @@ require (
 	github.com/gin-gonic/gin v1.3.0
 	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
+	github.com/hashicorp/golang-lru v0.5.1
 	github.com/mattn/go-isatty v0.0.7 // indirect
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/nwaples/rardecode v1.0.0 // indirect
