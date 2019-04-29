@@ -90,9 +90,19 @@ func main() {
 		Try it out here: GET /ip/%s`, c.ClientIP()), nil)
 	})
 	r.GET("/ip/:ip", func(c *gin.Context) {
+
 		ip := c.Param("ip")
 
 		if cachedCountry, ok := lruCache.Get(ip); ok {
+			etag := fmt.Sprintf("%x", md5.Sum([]byte(fmt.Sprintf("%v", cachedCountry))))
+			c.Header("ETag", etag)
+			c.Header("Cache-Control", "public, max-age=86400")
+			if match := c.GetHeader("If-None-Match"); match != "" {
+				if strings.Contains(match, etag) {
+					c.Status(http.StatusNotModified)
+					return
+				}
+			}
 			c.JSON(200, cachedCountry)
 			return
 		}
@@ -106,6 +116,15 @@ func main() {
 			return
 		}
 		lruCache.Add(ip, country)
+		etag := fmt.Sprintf("%x", md5.Sum([]byte(fmt.Sprintf("%v", country))))
+		c.Header("ETag", etag)
+		c.Header("Cache-Control", "public, max-age=86400")
+		if match := c.GetHeader("If-None-Match"); match != "" {
+			if strings.Contains(match, etag) {
+				c.Status(http.StatusNotModified)
+				return
+			}
+		}
 		c.JSON(200, country)
 	})
 	r.Run() // listen and serve on 0.0.0.0:8080
