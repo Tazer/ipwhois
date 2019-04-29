@@ -45,7 +45,10 @@ func main() {
 
 	}
 
-	//TODO: Implement hash
+	// TODO: Implement cron that checks every 24h for new file
+	// Implement m5 hash of the files so it can be compared against
+	// https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.md5
+	// If there is a new file download and reopen database with the new file
 
 	_, err = os.Stat("GeoIP2-Country.mmdb")
 
