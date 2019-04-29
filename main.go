@@ -45,6 +45,8 @@ func main() {
 
 	}
 
+	//TODO: Implement hash
+
 	_, err = os.Stat("GeoIP2-Country.mmdb")
 
 	// check if there is an error
@@ -74,8 +76,6 @@ func main() {
 		}
 
 	}
-
-	//TODO: Implement hash
 
 	db, err := geoip2.Open("GeoIP2-Country.mmdb")
 	if err != nil {
