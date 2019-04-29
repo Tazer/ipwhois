@@ -1,6 +1,6 @@
 # ipwhois
 
-![Docker Pulls](https://img.shields.io/docker/pulls/tazerr/ipwhois.svg) ![GitHub stars](https://img.shields.io/github/stars/tazer/ipwhois.svg?style=social)
+<a href="https://hub.docker.com/r/tazerr/ipwhois">![Docker Pulls](https://img.shields.io/docker/pulls/tazerr/ipwhois.svg)</a> ![GitHub stars](https://img.shields.io/github/stars/tazer/ipwhois.svg?style=social)
 
 Small REST API built with github.com/oschwald/geoip2-golang
 
