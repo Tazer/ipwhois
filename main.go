@@ -16,6 +16,7 @@ import (
 	lru "github.com/hashicorp/golang-lru"
 	"github.com/mholt/archiver"
 	"github.com/oschwald/geoip2-golang"
+	"github.com/tazer/ipwhois/internal/download"
 )
 
 func main() {
@@ -34,7 +35,7 @@ func main() {
 
 		// check if error is file does not exist
 		if os.IsNotExist(err) {
-			downloadFile("GeoLite2-Country.tar.gz", "https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz")
+			download.File("GeoLite2-Country.tar.gz", "https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz")
 			_, err = os.Stat("GeoLite2-Country.tar.gz")
 			if err != nil {
 				log.Fatalf("Coudlnt download file info err: %v", err)
@@ -131,29 +132,6 @@ func main() {
 		c.JSON(200, country)
 	})
 	r.Run() // listen and serve on 0.0.0.0:8080
-}
-
-// downloadFile will download a url to a local file. It's efficient because it will
-// write as it downloads and not load the whole file into memory.
-func downloadFile(filepath string, url string) error {
-
-	// Get the data
-	resp, err := http.Get(url)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	// Create the file
-	out, err := os.Create(filepath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	// Write the body to file
-	_, err = io.Copy(out, resp.Body)
-	return err
 }
 
 func hash_file_md5(filePath string) (string, error) {
