@@ -7,9 +7,17 @@ import (
 	"github.com/oschwald/geoip2-golang"
 	"github.com/tazer/ipwhois/internal/api"
 	"github.com/tazer/ipwhois/internal/database"
+	"github.com/tazer/ipwhois/internal/ipwhois"
 )
 
 func main() {
+
+	err := ipwhois.GetFile()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	lruCache, err := lru.New(1024)
 
 	if err != nil {
